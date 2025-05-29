@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% block title %}Модерация заявок{% endblock %}
+{% block content %}
+
+<style>
+  body {
+    background-color: #101014;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 16px;
+  }
+
+  .request-card:hover {
+    transform: scale(1.01);
+  }
+
+  .request-card h3 {
+    margin: 0;
+    color: #ff4b2b;
+    font-size: 1.3rem;
+  }
+
+  .request-card p {
+    margin: 0;
+    color: #ccc;
+    font-size: 0.95rem;
+  }
+
+  .request-card .actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+  }
+
+  .approve-btn,
+  .reject-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    transition: background 0.3s ease;
+  }
+
+  .approve-btn {
+    background: linear-gradient(to right, #00b894, #00cec9);
+  }
+
+  .approve-btn:hover {
+    background: linear-gradient(to right, #019875, #00bfa6);
+  }
+
+  .reject-btn {
+    background: linear-gradient(to right, #ff416c, #ff4b2b);
+  }
+
+  .reject-btn:hover {
+    background: linear-gradient(to right, #e63b5f, #d13c24);
+  }
+
+  @media (max-width: 600px) {
+    .request-card {
+      padding: 12px;
+    }
+
+    .request-card h3 {
+      font-size: 1.1rem;
+    }
+
+    .request-card p {
+      font-size: 0.9rem;
+    }
+
+    .approve-btn,
+    .reject-btn {
+      width: 100%;
+    }
+
+    .request-card .actions {
+      flex-direction: column;
+    }
+  }
+
+  .add-btn,
+  .change-password-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: linear-gradient(to right, #ff416c, #ff4b2b);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background 0.3s ease;
+  }
+
+  .add-btn:hover,
+  .change-password-btn:hover {
+    background: linear-gradient(to right, #e63b5f, #d13c24);
+  }
+</style>
+
+<h1>Заявки на добавление</h1>
+
+{% if requests|length == 0 %}
+  <p style="color: #ccc;">Нет новых заявок.</p>
+{% else %}
+  {% for req in requests %}
+    <div class="request-card" style="margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 20px;">
+        <h3>{{ req.title }}</h3>
+
+        {% if req.poster_url %}
+          <div style="margin: 10px 0;">
+            <img src="{{ req.poster_url }}" alt="Постер" style="max-width: 200px; border-radius: 10px;">
+          </div>
+        {% endif %}
+
+        <p><strong>Год:</strong> {{ req.year or '—' }}</p>
+        <p><strong>Жанр:</strong> {{ req.genre or '—' }}</p>
+        <p><strong>Страна:</strong> {{ req.country or '—' }}</p>
+        <p><strong>Режиссёр:</strong> {{ req.director or '—' }}</p>
+        <p><strong>Описание:</strong> {{ req.description or '—' }}</p>
+        <p><strong>Тип:</strong> {{ 'Сериал' if req.is_series else 'Фильм' }}</p>
+
+        {% if req.trailer_url %}
+          <p><strong>Ссылка на трейлер:</strong>
+            <a href="{{ req.trailer_url }}" target="_blank" style="color:#4dd0e1;">
+                {{ req.trailer_url }}
+            </a>
+          </p>
+        {% endif %}
+
+        <div class="actions">
+          <form method="POST" action="{{ url_for('approve_request', request_id=req.id) }}">
+            <button type="submit" class="approve-btn">✅ Одобрить</button>
+          </form>
+          <form method="POST" action="{{ url_for('reject_request', request_id=req.id) }}">
+            <button type="submit" class="reject-btn">❌ Отклонить</button>
+          </form>
+        </div>
+      </div>
+
+  {% endfor %}
+{% endif %}
+
+{% endblock %}

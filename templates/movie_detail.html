@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ movie.title }} — Детали фильма</title>
+  <style>
+    body {
+      background-color: #101014;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    header a {
+      color: #ff416c;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+
+    main h1 {
+      font-size: 2rem;
+      margin-top: 0;
+      line-height: 1.2;
+    }
+
+    .poster-img {
+      cursor: pointer;
+      width: 100%;
+      max-width: 300px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      margin-top: 20px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .modal-content {
+      background: linear-gradient(to right, #1e1e2e, #2a2a3c);
+      padding: 20px;
+      width: 100%;
+      max-width: 600px;
+      border-radius: 14px;
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
+
+    .modal-content img {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .modal .close {
+      position: absolute;
+      right: 20px;
+      top: 10px;
+      font-size: 28px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    .review {
+      background-color: #1c1c28;
+      padding: 10px 15px;
+      margin: 10px 0;
+      border-radius: 10px;
+    }
+
+    .review strong {
+      color: #ff416c;
+    }
+
+    form textarea,
+    form input {
+      width: 100%;
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      background-color: #2e2e3e;
+      color: #fff;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    form button {
+      margin-top: 10px;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(to right, #ff416c, #ff4b2b);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      width: 100%;
+    }
+
+    form button:hover {
+      background: linear-gradient(to right, #e63b5f, #d13c24);
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 12px;
+      }
+
+      main h1 {
+        font-size: 1.6rem;
+      }
+
+      form button {
+        font-size: 1rem;
+      }
+
+      .modal-content {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="{{ url_for('index') }}">← Назад к списку</a>
+</header>
+
+<main>
+  <h1>{{ movie.title }}</h1>
+  <p><strong>Год:</strong> {{ movie.year }}</p>
+  <p><strong>Режиссёр:</strong> {{ movie.director }}</p>
+  <p><strong>Жанр:</strong> {{ movie.genre }}</p>
+  <p><strong>Рейтинг:</strong> {{ movie.rating }}</p>
+  {% if movie.trailer_url %}
+    <p><strong>Трейлер:</strong> <a href="{{ movie.trailer_url }}" target="_blank" style="color: #4dd0e1;">Смотреть</a></p>
+  {% endif %}
+  <p>{{ movie.description }}</p>
+
+  {% if movie.poster_url %}
+    <img src="{{ movie.poster_url }}" alt="Постер фильма" class="poster-img" onclick="openModal()">
+  {% endif %}
+</main>
+
+
+<!-- Модальное окно -->
+<div id="posterModal" class="modal" onclick="closeModal()">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2>{{ movie.title }}</h2>
+    <img src="{{ movie.poster_url }}" alt="Постер {{ movie.title }}">
+    <p><strong>Год:</strong> {{ movie.year }}</p>
+    <p><strong>Режиссёр:</strong> {{ movie.director }}</p>
+    <p><strong>Жанр:</strong> {{ movie.genre }}</p>
+    <p><strong>Рейтинг:</strong> {{ movie.rating }}</p>
+    <p>{{ movie.description }}</p>
+  </div>
+</div>
+
+<h3>Отзывы:</h3>
+{% for review in movie.reviews %}
+  <div class="review">
+    <strong>{{ review.user.username }}</strong> — ⭐ {{ review.rating }}
+    <p>{{ review.content }}</p>
+  </div>
+{% endfor %}
+
+{% if 'user' in session %}
+  <form method="post" id="add-review">
+    <textarea name="content" placeholder="Ваш отзыв..." required></textarea>
+    <input type="number" name="rating" min="1" max="10" required>
+    <button type="submit">Оставить отзыв</button>
+  </form>
+{% else %}
+  <p>Для добавления отзыва необходимо <a href="{{ url_for('login') }}">войти в аккаунт</a>.</p>
+{% endif %}
+
+<script>
+  function openModal() {
+    document.getElementById("posterModal").style.display = "flex";
+  }
+
+  function closeModal() {
+    document.getElementById("posterModal").style.display = "none";
+  }
+
+  window.onclick = function(event) {
+    const modal = document.getElementById("posterModal");
+    if (event.target === modal) {
+      closeModal();
+    }
+  }
+</script>
+
+</body>
+</html>

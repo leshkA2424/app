@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block title %}Регистрация{% endblock %}
+
+{% block content %}
+<style>
+  .auth-container {
+    max-width: 400px;
+    margin: 0 auto;
+    background: linear-gradient(to right, #1e1e2f, #2c2c3c);
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+    color: #f0f0f0;
+  }
+
+  .auth-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #ff4b2b;
+  }
+
+  label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+
+  input,
+  select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #444;
+    background-color: #2e2e3e;
+    color: #fff;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+
+  .form-actions {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .btn-register {
+    padding: 12px 20px;
+    width: 100%;
+    background: linear-gradient(to right, #ff416c, #ff4b2b);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .btn-register:hover {
+    background: linear-gradient(to right, #e63b5f, #d13c24);
+  }
+
+  .text-center {
+    margin-top: 10px;
+    font-size: 0.9rem;
+  }
+
+  .text-center a {
+    color: #ff4b2b;
+    text-decoration: none;
+  }
+
+  @media (max-width: 480px) {
+    .auth-container {
+      padding: 20px;
+    }
+  }
+</style>
+
+<div class="auth-container">
+  <h2>Регистрация</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-messages">
+        {% for category, message in messages %}
+          <div class="alert {{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST">
+    <label for="username">Имя пользователя:</label>
+    <input type="text" name="username" required>
+
+    <label for="password">Пароль:</label>
+    <input type="password" name="password" required>
+
+    <label for="phone">Телефон:</label>
+    <input type="text" name="phone" placeholder="+7 999 123-45-67">
+
+    <label for="role">Роль:</label>
+    <select name="role" required>
+      <option value="user">Пользователь</option>
+      <option value="admin">Администратор</option>
+    </select>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-register">Регистрация</button>
+      <p class="text-center">Уже есть аккаунт? <a href="{{ url_for('login') }}">Войти</a></p>
+    </div>
+  </form>
+</div>
+{% endblock %}
