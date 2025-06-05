@@ -1,0 +1,298 @@
+{% extends 'base.html' %}
+{% block title %}Сериалы{% endblock %}
+{% block content %}
+
+<style>
+  body {
+    background-color: #101014;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 16px;
+  }
+
+  .modal {
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+  }
+
+  .modal.show {
+    display: flex !important;
+  }
+
+  .modal-content {
+    background: linear-gradient(to right, #1e1e2e, #2a2a3c);
+    color: #ffffff;
+    padding: 24px;
+    width: 100%;
+    max-width: 600px;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.3s ease;
+  }
+
+  .modal-content img {
+    width: 50%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+
+  .modal-details {
+    margin-left: 20px;
+    flex: 1;
+  }
+
+  .modal-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+
+  .modal-content input,
+  .modal-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #bbb;
+    cursor: pointer;
+  }
+
+  .submit-btn {
+    padding: 12px;
+    background: linear-gradient(to right, #ff416c, #ff4b2b);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+  }
+
+  .submit-btn:hover {
+    background-color: #e63b5f;
+  }
+
+  .filter-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .open-filter-btn {
+    padding: 12px 24px;
+    background: linear-gradient(to right, #ff416c, #ff4b2b);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+
+  .open-filter-btn:hover {
+    background: linear-gradient(to right, #e83e57, #e64422);
+    transform: translateY(-2px);
+  }
+
+  .poster-grid {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-bottom: 24px;
+  }
+
+  .poster-card {
+    position: relative;
+    width: 160px;
+    height: 240px;
+    border-radius: 12px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+  }
+
+  .poster-card:hover {
+    transform: scale(1.05);
+  }
+
+  .poster-card h3 {
+    color: white;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 1rem;
+    text-align: center;
+    width: 100%;
+  }
+
+  @media (max-width: 480px) {
+    .poster-card {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 2/3;
+    }
+    .modal-content {
+      flex-direction: column;
+      padding: 20px;
+    }
+  }
+  .add-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: linear-gradient(to right, #ff416c, #ff4b2b);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background 0.3s ease;
+  }
+  .add-btn:hover {
+    background: linear-gradient(to right, #e63b5f, #d13c24);
+  }
+</style>
+
+<div class="filter-bar">
+  <h1 style="margin: 0;">Сериалы</h1>
+  <button class="open-filter-btn" onclick="toggleFilterModal()">🔍 Фильтровать</button>
+</div>
+
+<div id="filterModal" class="modal" onclick="toggleFilterModal()">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <span class="close" onclick="toggleFilterModal()">&times;</span>
+    <form method="get">
+      <h2>Фильтрация</h2>
+      <input type="text" name="genre" placeholder="Жанр (Комедия)" value="{{ request.args.get('genre', '') }}">
+      <input type="number" name="year" placeholder="Год" value="{{ request.args.get('year', '') }}">
+      <input type="number" name="rating" placeholder="Рейтинг от" value="{{ request.args.get('rating', '') }}">
+      <input type="text" name="actor" placeholder="Актёр" class="form-control mb-2">
+      <input type="text" name="country" placeholder="Страна (США)" value="{{ request.args.get('country', '') }}">
+      <button type="submit" class="submit-btn">Применить</button>
+    </form>
+  </div>
+</div>
+
+{% if series_list|length == 0 %}
+  <p style="color: red; text-align: center;">Нет сериалов для отображения</p>
+{% endif %}
+
+<div class="poster-grid">
+  {% for series in series_list %}
+    <div class="poster-card"
+         style="background-image: url('{{ series.poster_url }}')"
+         onclick='openPosterModalFull({
+           id: {{ series.id }},
+           title: {{ series.title|tojson }},
+           poster_url: {{ series.poster_url|tojson }},
+           year: {{ series.year|tojson }},
+           director: {{ series.director|tojson }},
+           genre: {{ series.genre|tojson }},
+           rating: {{ series.rating|tojson }},
+           actors: {{ series.actors|map(attribute='name')|list|tojson }},
+           description: {{ series.description|tojson }},
+           trailer_url: {{ series.trailer_url|tojson }}
+         })'>
+      <h3>{{ series.title }}</h3>
+    </div>
+  {% endfor %}
+</div>
+
+<div id="posterModal" class="modal" onclick="closePosterModal()">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <span class="close" onclick="closePosterModal()">&times;</span>
+    <img id="modalPosterImg" src="" alt="Постер">
+    <div class="modal-details">
+      <h2 id="modalTitle"></h2>
+      <p><strong>Год:</strong> <span id="modalYear"></span></p>
+      <p><strong>Режиссёр:</strong> <span id="modalDirector"></span></p>
+      <p><strong>Жанр:</strong> <span id="modalGenre"></span></p>
+      <p><strong>Актёры:</strong> <span id="modalActors"></span></p>
+      <p><strong>Рейтинг:</strong> <span id="modalRating"></span></p>
+      <p id="modalDescription"></p>
+      <p id="modalTrailerLink">
+        <strong>Трейлер:</strong>
+        <a href="#" target="_blank" style="color:#4dd0e1;">Смотреть</a>
+      </p>
+      <a id="modalReviewBtn" class="add-btn" href="#">➕ Добавить отзыв</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function openPosterModalFull(movie) {
+  document.getElementById("modalPosterImg").src = movie.poster_url;
+  document.getElementById("modalTitle").innerText = movie.title;
+  document.getElementById("modalYear").innerText = movie.year || '—';
+  document.getElementById('modalActors').textContent = (movie.actors && movie.actors.length)
+    ? movie.actors.join(', ')
+    : '—';
+  document.getElementById("modalDirector").innerText = movie.director || '—';
+  document.getElementById("modalGenre").innerText = movie.genre || '—';
+  document.getElementById("modalRating").innerText = movie.rating || '—';
+  document.getElementById("modalDescription").innerText = movie.description || '';
+
+  const trailerLink = document.querySelector("#modalTrailerLink a");
+  if (movie.trailer_url && movie.trailer_url !== 'None') {
+    trailerLink.href = movie.trailer_url;
+    trailerLink.innerText = "Смотреть";
+    trailerLink.style.pointerEvents = "auto";
+  } else {
+    trailerLink.href = "#";
+    trailerLink.innerText = "Нет ссылки";
+    trailerLink.style.pointerEvents = "none";
+  }
+
+  const reviewBtn = document.getElementById("modalReviewBtn");
+  if (movie.id) {
+    reviewBtn.href = `/movie/${movie.id}#add-review`;
+  } else {
+    reviewBtn.href = "#";
+  }
+
+  document.getElementById("posterModal").classList.add("show");
+}
+
+function closePosterModal() {
+  document.getElementById("posterModal").classList.remove("show");
+}
+
+function toggleFilterModal() {
+  const modal = document.getElementById("filterModal");
+  modal.classList.toggle("show");
+}
+</script>
+{% endblock %}

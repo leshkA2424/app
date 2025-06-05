@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ movie.title }} — Детали фильма</title>
+  <style>
+    body {
+      background-color: #101014;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    header a {
+      color: #ff416c;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+
+    .review {
+      background-color: #1c1c28;
+      padding: 10px 15px;
+      margin: 10px 0;
+      border-radius: 10px;
+    }
+
+    .review strong {
+      color: #ff416c;
+    }
+
+    form textarea,
+    form input {
+      width: 100%;
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      background-color: #2e2e3e;
+      color: #fff;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    form button {
+      margin-top: 10px;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(to right, #ff416c, #ff4b2b);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      width: 100%;
+    }
+
+    form button:hover {
+      background: linear-gradient(to right, #e63b5f, #d13c24);
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 12px;
+      }
+
+      main h1 {
+        font-size: 1.6rem;
+      }
+
+      form button {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="{{ url_for('index') }}">← Назад к списку</a>
+</header>
+
+<main style="
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  background: linear-gradient(145deg, #1b1b2f, #222233);
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  margin-bottom: 30px;
+  align-items: flex-start;
+  ">
+
+  {% if movie.poster_url %}
+  <div style="flex: 1 1 300px; max-width: 300px;">
+    <img src="{{ movie.poster_url }}" alt="Постер фильма"
+         style="width: 100%; border-radius: 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.5);">
+  </div>
+  {% endif %}
+
+  <div style="flex: 2 1 400px;">
+    <h1 style="font-size: 2.2rem; margin-bottom: 16px; color: #ff4b2b;">{{ movie.title }}</h1>
+    <p><strong>Год:</strong> {{ movie.year }}</p>
+    <p><strong>Режиссёр:</strong> {{ movie.director }}</p>
+    <p><strong>Жанр:</strong> {{ movie.genre }}</p>
+    <p><strong>Актёры:</strong> {{ movie.actors | map(attribute='name') | join(', ') }}</p>
+    <p><strong>Рейтинг:</strong> ⭐ {{ movie.rating }}</p>
+
+    {% if movie.trailer_url %}
+      <p><strong>Трейлер:</strong>
+        <a href="{{ movie.trailer_url }}" target="_blank"
+           style="color:#4dd0e1; font-weight: bold; text-decoration: underline;">
+           Смотреть
+        </a>
+      </p>
+    {% endif %}
+
+    <div style="margin-top: 12px; line-height: 1.6;">
+      {{ movie.description }}
+    </div>
+  </div>
+</main>
+
+<h3>Отзывы:</h3>
+{% for review in movie.reviews %}
+  <div class="review">
+    <strong>{{ review.user.username }}</strong> — ⭐ {{ review.rating }}
+    <p>{{ review.content }}</p>
+  </div>
+{% endfor %}
+
+{% if 'user' in session %}
+  <form method="post" id="add-review">
+    <textarea name="content" placeholder="Ваш отзыв..." required></textarea>
+    <input type="number" name="rating" min="1" max="10" required>
+    <button type="submit">Оставить отзыв</button>
+  </form>
+{% else %}
+  <p>Для добавления отзыва необходимо <a href="{{ url_for('login') }}">войти в аккаунт</a>.</p>
+{% endif %}
+
+</body>
+</html>

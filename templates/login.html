@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block title %}Вход{% endblock %}
+
+{% block content %}
+<style>
+  .auth-container {
+    max-width: 400px;
+    margin: 40px auto;
+    padding: 24px;
+    background-color: #1c1c28;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    color: #e0e0e0;
+  }
+
+  .auth-container h2 {
+    text-align: center;
+    color: #ff4b2b;
+    margin-bottom: 20px;
+  }
+
+  .auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .auth-form label {
+    font-weight: bold;
+    color: #ccc;
+  }
+
+  .auth-form input {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #444;
+    background-color: #2e2e3e;
+    color: #fff;
+    font-size: 1rem;
+  }
+
+  .btn-submit {
+    padding: 12px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    background: linear-gradient(to right, #ff416c, #ff4b2b);
+    border: none;
+    color: white;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .btn-submit:hover {
+    background: linear-gradient(to right, #e63b5f, #e64422);
+  }
+
+  .auth-container p {
+    text-align: center;
+    margin-top: 16px;
+  }
+
+  .auth-container a {
+    color: #ff4b2b;
+    text-decoration: none;
+  }
+
+  .auth-container a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="auth-container">
+  <h2>Вход в аккаунт</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-messages">
+        {% for category, message in messages %}
+          <div class="alert {{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST" action="{{ url_for('login') }}" class="auth-form">
+    <label for="username">Имя пользователя</label>
+    <input type="text" id="username" name="username" required autofocus>
+
+    <label for="password">Пароль</label>
+    <input type="password" id="password" name="password" required>
+
+    <button type="submit" class="btn-submit">Войти</button>
+  </form>
+
+  <p>Нет аккаунта? <a href="{{ url_for('register') }}">Зарегистрироваться</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  body {
+    margin: 0;
+    padding: 16px;
+    background-color: #101014;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .search-results {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    padding: 20px 0;
+  }
+
+  .search-card {
+    background-color: #1c1c28;
+    border-radius: 12px;
+    overflow: hidden;
+    width: 160px;
+    height: 240px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background-size: cover;
+    background-position: center;
+    color: white;
+    position: relative;
+  }
+
+  .search-card:hover {
+    transform: scale(1.05);
+  }
+
+  .search-card h4 {
+    background: rgba(0,0,0,0.6);
+    padding: 10px;
+    margin: 0;
+    text-align: center;
+    font-size: 0.95rem;
+    word-wrap: break-word;
+  }
+
+  .add-btn,
+  .change-password-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: linear-gradient(to right, #ff416c, #ff4b2b);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background 0.3s ease;
+  }
+
+  .add-btn:hover,
+  .change-password-btn:hover {
+    background: linear-gradient(to right, #e63b5f, #d13c24);
+  }
+
+  @media (max-width: 480px) {
+    .search-card {
+      width: 45%;
+      height: auto;
+      aspect-ratio: 2 / 3;
+    }
+
+    .search-card h4 {
+      font-size: 0.85rem;
+      padding: 8px;
+    }
+
+    .add-btn,
+    .change-password-btn {
+      width: 100%;
+      text-align: center;
+      font-size: 1rem;
+    }
+  }
+</style>
+
+
+<h2 style="margin-bottom: 20px;">Результаты поиска по запросу "{{ query }}"</h2>
+
+{% if results %}
+  <div class="search-results">
+    {% for movie in results %}
+      <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="search-card" style="background-image: url('{{ movie.poster_url }}')">
+        <h4>{{ movie.title }}{% if movie.year %} ({{ movie.year }}){% endif %}</h4>
+      </a>
+    {% endfor %}
+  </div>
+{% else %}
+  <p style="color: #f66; font-weight: bold;">Ничего не найдено.</p>
+{% endif %}
+{% endblock %}

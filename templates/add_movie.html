@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% block title %}Добавить фильм{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    background-color: #101014;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 10px;
+  }
+
+  .form-container {
+    background: linear-gradient(to right, #1e1e2f, #2c2c3c);
+    padding: 30px;
+    border-radius: 16px;
+    max-width: 700px;
+    margin: 0 auto;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+  }
+
+  .page-title {
+    text-align: center;
+    font-size: 2rem;
+    color: #ff4b2b;
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #ccc;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #444;
+    background-color: #2e2e3e;
+    color: #fff;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .form-row .form-group {
+    flex: 1 1 100%;
+  }
+
+  .submit-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    background: linear-gradient(to right, #ff416c, #ff4b2b);
+    border: none;
+    color: white;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+
+  .submit-btn:hover {
+    background: linear-gradient(to right, #e63b5f, #e64422);
+    transform: translateY(-2px);
+  }
+
+  .add-btn,
+  .change-password-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: linear-gradient(to right, #ff416c, #ff4b2b);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background 0.3s ease;
+  }
+
+  .add-btn:hover,
+  .change-password-btn:hover {
+    background: linear-gradient(to right, #e63b5f, #d13c24);
+  }
+
+  @media (max-width: 600px) {
+    .form-container {
+      padding: 20px;
+    }
+
+    .page-title {
+      font-size: 1.5rem;
+    }
+
+    .form-row {
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .submit-btn {
+      font-size: 1rem;
+      padding: 12px;
+    }
+  }
+</style>
+
+<h2 class="page-title">Добавить фильм</h2>
+
+<form method="POST" action="{{ url_for('add_movie') }}" class="form-container">
+  <div class="form-group">
+    <label for="title">Название</label>
+    <input type="text" id="title" name="title" required>
+  </div>
+
+  <div class="form-group">
+    <label for="type">Тип</label>
+    <select id="type" name="type" required>
+      <option value="movie">Фильм</option>
+      <option value="series">Сериал</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="description">Описание</label>
+    <textarea id="description" name="description" rows="4" required></textarea>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group" style="flex:1">
+      <label for="director">Режиссёр</label>
+      <input type="text" id="director" name="director">
+    </div>
+    <div class="form-group" style="flex:1">
+      <label for="genre">Жанр</label>
+      <input type="text" id="genre" name="genre">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="actors">Актёры (через запятую)</label>
+    <input type="text" id="actors" name="actors" placeholder="Пример: Том Хэнкс, Мэрил Стрип, Леонардо Ди Каприо">
+  </div>
+
+  <div class="form-row">
+    <div class="form-group" style="flex:1">
+      <label for="year">Год</label>
+      <input type="number" id="year" name="year" min="1900" max="2100">
+    </div>
+    <div class="form-group" style="flex:1">
+      <label for="rating">Рейтинг</label>
+      <input type="number" id="rating" name="rating" step="0.1" min="0" max="10">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="poster_url">Ссылка на постер (URL)</label>
+    <input type="text" id="poster_url" name="poster_url">
+  </div>
+
+  <div class="form-group">
+    <label for="trailer_url">Ссылка на трейлер (YouTube, Rutube и т.д.)</label>
+    <input type="text" id="trailer_url" name="trailer_url">
+  </div>
+
+  <div class="form-group">
+    <label for="country">Страна</label>
+    <input type="text" id="country" name="country">
+  </div>
+
+  <button type="submit" class="submit-btn">Сохранить</button>
+</form>
+{% endblock %}

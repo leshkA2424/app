@@ -1,0 +1,304 @@
+/* ========== Общие стили ========== */
+body {
+    margin: 0;
+    background-color: #1e1e2f;
+    color: #ffffff;
+    font-family: 'Poppins', Arial, sans-serif;
+    padding: 20px;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+main.container {
+    padding-top: 80px;
+}
+
+/* ========== Хедер ========== */
+header {
+    height: 60px;
+    background-color: #2c2c3c;
+    position: fixed;
+    width: 100%;
+    z-index: 1100;
+    top: 0;
+    left: 0;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #2c2c3c;
+}
+
+.logo {
+    color: #8a2be2;
+    font-size: 1.8rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* ========== Поиск ========== */
+.search-form {
+    display: flex;
+    align-items: center;
+}
+
+.search-form input {
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    width: 200px;
+    font-size: 1rem;
+}
+
+.search-form button {
+    padding: 8px 10px;
+    margin-left: 5px;
+    background-color: #8a2be2;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.search-form button:hover {
+    background-color: #7326c2;
+}
+
+/* ========== Кнопки ========== */
+.btn {
+    background-color: #8a2be2;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #7326c2;
+}
+
+.btn.logout {
+    background-color: #e74c3c;
+}
+
+.btn.logout:hover {
+    background-color: #c0392b;
+}
+
+/* ========== Футер ========== */
+footer {
+    background-color: #1c1c28;
+    color: #e0e0e0;
+    text-align: center;
+    padding: 12px 0;
+    font-size: 0.9rem;
+    margin-top: auto;
+}
+
+/* ========== Формы ========== */
+.form-container,
+.auth-container,
+.register-container {
+    background-color: #2a2a3d;
+    padding: 30px 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+    max-width: 700px;
+    margin: 30px auto;
+    color: #fff;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #ccc;
+}
+
+input,
+textarea,
+select {
+    width: 100%;
+    padding: 12px 10px;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background-color: #1e1e2f;
+    color: white;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: #8a2be2;
+    outline: none;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+/* ========== Кнопки форм ========== */
+.submit-btn,
+.btn-submit,
+.btn-register {
+    background-color: #8a2be2;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    display: block;
+    margin-top: 25px;
+    text-align: center;
+}
+
+.submit-btn:hover,
+.btn-submit:hover,
+.btn-register:hover {
+    background-color: #7326c2;
+}
+
+.btn-register:focus,
+.btn-register:active {
+    outline: none;
+    box-shadow: 0 6px 12px rgba(115, 38, 194, 0.7);
+}
+
+/* ========== Сетка постеров ========== */
+.poster-grid,
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    padding: 20px 40px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.scroll-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 16px;
+    padding-bottom: 10px;
+    margin-bottom: 40px;
+}
+
+/* ========== Карточки фильмов ========== */
+.poster-card {
+    flex: 0 0 auto;
+    width: 220px;
+    min-height: 320px;
+    aspect-ratio: 2 / 3;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.poster-card:hover {
+    transform: scale(1.05);
+}
+
+.poster-img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ========== Медиа-запросы ========== */
+@media (max-width: 900px) {
+    .poster-grid,
+    .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .poster-grid,
+    .grid-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ========== Боковое меню ========== */
+.menu-toggle {
+    font-size: 2rem;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    z-index: 1101;
+    position: relative;
+}
+
+.sidebar {
+    position: fixed;
+    top: 60px;
+    left: -220px;
+    width: 220px;
+    height: calc(100% - 60px);
+    background-color: #1e1e2f;
+    padding-top: 20px;
+    transition: left 0.3s ease;
+    z-index: 1000;
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar li {
+    padding: 15px 20px;
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    display: block;
+}
+
+/* ========== Затемнение при открытом меню ========== */
+.overlay {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 60px);
+    background-color: rgba(0, 0, 0, 0.4);
+    display: none;
+    z-index: 900;
+}
+
+.overlay.active {
+    display: block;
+}
+
